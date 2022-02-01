@@ -1,0 +1,13 @@
+Travail à faire:
+
+1:	Copier/coller jeu_pil chez Vos documents
+
+2: 	visionnez tous les .PNG et .bmp du dossier jeu_pil
+
+3:	lancez laby_jeu1.py  se deplacer avec les touches de direction.
+
+4:	observation du code
+
+5:	idem avec laby_jeu2.py
+
+6:	Faire votre jeu, dans le même genre en pas pareil...  modification des dessins + du code SVP
