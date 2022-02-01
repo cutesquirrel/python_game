@@ -55,25 +55,34 @@ def principal():
     mInit = 1
     m = mInit
 
-    x, y = 10, 45
+    x, y = 10, 39
     x_mvt, y_mvt = 0, 0
+    # depart mechant
     xm, ym = 350, 300
+    # deplacements mechant
     xm_mvt, ym_mvt = 1, 0
     sens = 'right'
+
+    # on compte les touches appuyees pour pouvoir sauter en meme temps qu'on avance.
+    nbTouchesAppuyees = 0
 
     while run:
 
         # temps de repos/rafraichissement de 10ms
         time.sleep(0.01)
 
-        # pour que le mechant change de tete et deplacement au bout de 30 x 10 = 300ms
-        n += 1
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+            # on relache la touche
             if event.type == pygame.KEYUP:
-                x_mvt = 0
+                nbTouchesAppuyees -= 1
+                if (nbTouchesAppuyees == 0):
+                    x_mvt = 0
+
+            # appui sur touche
             if event.type == pygame.KEYDOWN:
+                nbTouchesAppuyees += 1
                 if event.key == pygame.K_LEFT:
                     x_mvt = -1
                     sens = 'left'
@@ -82,10 +91,7 @@ def principal():
                     sens = 'right'
                 if event.key == pygame.K_UP:
                     isjump = True
-                if event.key == pygame.K_DOWN:
-                    y_mvt = 1
-                # if event.key == pygame.K_SPACE:
-                #     isjump = True
+
 
         if (isjump):
             F = (1 / 2)*m*(v**2)
@@ -100,7 +106,7 @@ def principal():
                 # on inverse le sens et le calcul du Y du coup.
                 m = -1 * mInit
             # fin du saut
-            if v == (-1 * vInit - 1):
+            if v == (-1 * vInit):
                 isjump = False
                 v = vInit
                 m = mInit
@@ -109,16 +115,13 @@ def principal():
 
 
 
-        x += x_mvt        # deplacement hero
-
-        xm += xm_mvt      # deplacement mechant
-
         # correction du deplacement si besoin
 
-        if (xm < 10) or (xm > 260):      # le mechant reste dans le terrain mais traverse les murs !!!
+        # le mechant reste dans le terrain mais traverse les murs !!!
+        if (xm < 10) or (xm > 260):
             xm -= xm_mvt
 
-        # pixel defaite
+        # pixel defaite (pics)
         if (pixel_fond[x, y+65] == (153, 153, 153)):
             defaite()
             time.sleep(2)
@@ -126,7 +129,7 @@ def principal():
             xm, ym = 350, 300
             xm_mvt, ym_mvt = 1, 0
 
-        # toucher  pixel= porte = victoire
+        # pixel victoire (porte)
         if (pixel_fond[x+65, y] == (85, 128, 124)):
             victoire()
             time.sleep(2)
@@ -134,37 +137,53 @@ def principal():
             xm, ym = 350, 300
             xm_mvt, ym_mvt = 1, 0
 
+        # platformes vertes (juste le trait)
         if (pixel_fond[x, y+65] == (118, 139, 80)):
             y_mvt = 0
         else:
             y_mvt = 1
 
-        if (abs(x-xm) < 20) and (abs(y-ym) < 15):                   # si collision mechant = defaite
+        # si collision mechant = defaite
+        if (abs(x-xm) < 20) and (abs(y-ym) < 15):
             defaite()
             time.sleep(2)
             x, y = 10, 10
             xm, ym = 350, 300
             xm_mvt, ym_mvt = 1, 0
 
-        # affichages des acteurs graphiques
 
-        surface.blit(fond, (0, 0))
-        if (sens == 'left'):
-          surface.blit(hero_droite, (x, y))
-        else:
-          surface.blit(hero_gauche, (x, y))
 
-        if n > 30:                                # 30x10ms=300ms histoire de faire alternner mechant1 et mechant2
+        # deplacement hero
+        x += x_mvt
+        y += y_mvt
+
+        # deplacement mechant
+        xm += xm_mvt
+
+        # pour que le mechant change de tete et deplacement au bout de 30 x 10 = 300ms
+        n += 1
+        # 30x10ms=300ms histoire de faire alterner mechant1 et mechant2
+        if n > 30:
             n = 0
             # inversion du flag= True/False toutes les 300ms
             flag = not(flag)
 
-        if(flag):                               # faire alternner mechant1 et mechant2
+        # affichages des acteurs graphiques
+        surface.blit(fond, (0, 0))
+
+        if (sens == 'left'):
+            surface.blit(hero_droite, (x, y))
+        else:
+            surface.blit(hero_gauche, (x, y))
+
+        # faire alternner mechant1 et mechant2
+        if (flag):
             surface.blit(mechant1, (xm, ym))
         else:
             surface.blit(mechant2, (xm, ym))
 
-        pygame.display.update()                 # rafraichissement
+        # rafraichissement
+        pygame.display.update()
 
 
 principal()
