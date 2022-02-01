@@ -16,8 +16,8 @@ pygame.display.set_caption("Ghosts 'n Goblins")
 
 # acteurs graphiques
 
-hero1=pygame.image.load('hero2.png')
-hero2=pygame.image.load('hero3.png')
+hero_gauche = pygame.image.load('hero2.png')
+hero_droite = pygame.image.load('hero3.png')
 fond=pygame.image.load('fond_GNG.bmp')
 super=pygame.image.load('super.png')
 echec=pygame.image.load('echec.png')
@@ -48,6 +48,8 @@ def principal():
     v = 5
     m = 1
 
+    sens = 'right'
+
     x,y=10,45
     x_mvt,y_mvt=0,0
     xm,ym=350,300
@@ -63,8 +65,10 @@ def principal():
             if event.type==pygame.KEYDOWN:
                 if event.key==pygame.K_LEFT:
                     x_mvt=-1
+                    sens = 'left'
                 if event.key==pygame.K_RIGHT:
                     x_mvt=1
+                    sens = 'right'
                 if event.key==pygame.K_UP:
                     if isjump == False:
                             isjump = True
@@ -126,7 +130,12 @@ def principal():
         # affichages des acteurs graphiques
 
         surface.blit(fond,(0,0))
-        surface.blit(hero1,(x,y))
+
+        # Image héro, droite ou gauche.
+        if (sens == 'left'):
+          surface.blit(hero_droite, (x, y))
+        else:
+          surface.blit(hero_gauche, (x, y))
 
         if n>30:                                # 30x10ms=300ms histoire de faire alternner mechant1 et mechant2
             n=0
